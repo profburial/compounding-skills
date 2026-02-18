@@ -1,5 +1,5 @@
 ---
-name: setup
+name: compounding-skills:setup
 description: One-time setup wizard that builds a personalized .claude/ library from your codebase — run once as compounding-skills:setup and never again.
 disable-model-invocation: true
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, AskUserQuestion
