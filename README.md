@@ -1,12 +1,12 @@
-# compounding-skills
+# Compounding Skills 
 
-> Skills that compound with your codebase.
+A Claude Code plugin that helps you create workflow commands, custom skills, and agents based on your preferences. 
 
 ## Philosophy
 
-Standard AI skills are authored once and never learn how you code — your conventions, your complexity preferences, your patterns. Every project ends up with generic advice.
+Standard AI skills are authored (or copied) once and never learn how you code — your conventions, your complexity preferences, your patterns. Every project ends up with generic advice.
 
-`compounding-skills` takes a different approach: generate skills from your actual codebase, then keep them in sync as you ship. The more you build, the better your skills get.
+Compounding Skills takes a different approach: generate skills from your actual codebase, then keep them in sync as you ship. The more you build, the better your skills get.
 
 ## The Workflow
 
@@ -22,10 +22,14 @@ brainstorm → plan → work → review → compound
 - **`/{prefix}:review`** — exhaustive code review using project-specific conventions
 - **`/{prefix}:compound`** — extract patterns from what was just built; update skills
 
+For existing projects, the setup command explores your code to find examples of common patterns and conventions to bake directly into your skills.
+
+For new projects, the plugin will ask you various questions based on your language/framework of choice to lay a solid foundation to compound on. 
+
 ## Installation
 
 ```
-/plugin marketplace add https://github.com/profburial/compounding-skills
+/plugin marketplace add profburial/compounding-skills
 /plugin install compounding-skills
 ```
 
