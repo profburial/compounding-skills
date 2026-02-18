@@ -1,0 +1,16 @@
+{
+  "name": "compounding-skills",
+  "owner": {
+    "name": "Terry Harmon",
+    "email": "profburial@gmail.com",
+    "url": "https://github.com/profburial"
+  },
+  "plugins": [
+    {
+      "name": "compounding-skills",
+      "source": "./plugins/compounding-skills",
+      "description": "Skills that compound with your codebase — generates a personalized .claude/ setup from real code patterns and keeps skills in sync as your codebase evolves.",
+      "version": "1.0.0"
+    }
+  ]
+}

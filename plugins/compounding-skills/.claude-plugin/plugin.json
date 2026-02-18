@@ -1,0 +1,14 @@
+{
+  "name": "compounding-skills",
+  "version": "1.0.0",
+  "description": "Skills that compound with your codebase — generates a personalized .claude/ setup from real code patterns and keeps skills in sync as your codebase evolves.",
+  "author": {
+    "name": "Terry Harmon",
+    "email": "profburial@gmail.com",
+    "url": "https://github.com/profburial"
+  },
+  "homepage": "https://github.com/profburial/compounding-skills",
+  "repository": "https://github.com/profburial/compounding-skills",
+  "license": "MIT",
+  "keywords": ["compounding", "skills", "personalization", "code-patterns", "workflow", "setup", "rails", "typescript", "python", "go"]
+}

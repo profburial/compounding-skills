@@ -1,0 +1,9 @@
+# Test output — real generated files used as reference examples
+tmp/
+
+# macOS
+.DS_Store
+
+# The Lords One True Editor
+*.swp
+*.swo
