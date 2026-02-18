@@ -1,6 +1,6 @@
 # Brownfield Codebase Analysis
 
-Step-by-step process for extracting real patterns from an existing codebase during `compounding-skills:setup` Phase 2A.
+Step-by-step process for extracting real patterns from an existing codebase during `compounding-skills-setup` Phase 2A.
 
 ## Goal
 

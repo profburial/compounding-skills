@@ -8,7 +8,7 @@ The compound-engineering-plugin provides excellent generic workflow commands and
 
 ## Commands
 
-### `compounding-skills:setup` — One-time Setup Wizard
+### `/compounding-skills-setup` — One-time Setup Wizard
 
 Run **once** after installing the plugin. Builds your `.claude/` library from scratch. Never run again on the same project.
 
@@ -35,15 +35,15 @@ Then run the one-time setup wizard:
 
 ```
 /init
-compounding-skills:setup
+/compounding-skills-setup
 ```
 
-Run `/init` first to generate your `CLAUDE.md`. Then run `compounding-skills:setup` to build your personalized `.claude/` library on top of it. Never run `compounding-skills:setup` again on the same project.
+Run `/init` first to generate your `CLAUDE.md`. Then run `/compounding-skills-setup` to build your personalized `.claude/` library on top of it. Never run `/compounding-skills-setup` again on the same project.
 
 ## How It Works
 
 ```
-Install → compounding-skills:setup (once, never again)
+Install → /compounding-skills-setup (once, never again)
              ↓
          Analyze codebase OR interview you
              ↓
@@ -71,7 +71,7 @@ The `code-simplifier` agent, for example, uses actual before/after refactors fro
 
 ## Files Generated
 
-After running `compounding-skills:setup`, your project will have:
+After running `/compounding-skills-setup`, your project will have:
 
 ```
 .claude/

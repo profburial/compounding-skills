@@ -33,10 +33,10 @@ Then run the setup wizard **once**:
 
 ```
 /init
-compounding-skills:setup
+/compounding-skills-setup
 ```
 
-`/init` generates your `CLAUDE.md`. `compounding-skills:setup` builds your personalized `.claude/` library on top of it.
+`/init` generates your `CLAUDE.md`. `/compounding-skills-setup` builds your personalized `.claude/` library on top of it.
 
 ## What Setup Produces
 

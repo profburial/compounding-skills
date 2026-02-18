@@ -1,15 +1,15 @@
 ---
-name: compounding-skills:setup
-description: One-time setup wizard that builds a personalized .claude/ library from your codebase — run once as compounding-skills:setup and never again.
+name: compounding-skills-setup
+description: One-time setup wizard that builds a personalized .claude/ library from your codebase — run once as /compounding-skills-setup and never again.
 disable-model-invocation: true
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, AskUserQuestion
 ---
 
-# compounding-skills:setup — Personalized .claude/ Setup Wizard
+# compounding-skills-setup — Personalized .claude/ Setup Wizard
 
 **Run this once after installing compounding-skills.** It builds a tailored `.claude/` library for your project — workflow commands, project skills, and specialized agents — based on how you actually code.
 
-> **One-time command.** After setup completes, use your generated `{command_prefix}:compound` command to keep skills in sync. Never run `compounding-skills:setup` again on the same project.
+> **One-time command.** After setup completes, use your generated `{command_prefix}:compound` command to keep skills in sync. Never run `/compounding-skills-setup` again on the same project.
 >
 > **Prerequisite:** Run `/init` first to generate your `CLAUDE.md` file. This setup wizard focuses on workflow commands and expert skills — project context belongs in `CLAUDE.md`.
 

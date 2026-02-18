@@ -6,7 +6,7 @@ user-invocable: false
 
 # Skill Garden
 
-Generator logic for the `compounding-skills` plugin. Loaded by `compounding-skills:setup`.
+Generator logic for the `compounding-skills` plugin. Loaded by `compounding-skills-setup`.
 
 ## Purpose
 
@@ -22,11 +22,11 @@ Load these as needed:
 
 | File | When to use |
 |------|-------------|
-| `references/brownfield.md` | During `compounding-skills:setup` Phase 2A — step-by-step codebase analysis |
-| `references/greenfield.md` | During `compounding-skills:setup` Phase 2B — preference interview questions and rationale |
-| `references/command-templates.md` | During `compounding-skills:setup` Phase 5.1 — parametrized templates for each workflow command |
-| `references/skill-templates.md` | During `compounding-skills:setup` Phases 5.2–5.3 — skill output templates |
-| `references/agent-templates.md` | During `compounding-skills:setup` Phases 5.5–5.6 — subagent definition templates |
+| `references/brownfield.md` | During `compounding-skills-setup` Phase 2A — step-by-step codebase analysis |
+| `references/greenfield.md` | During `compounding-skills-setup` Phase 2B — preference interview questions and rationale |
+| `references/command-templates.md` | During `compounding-skills-setup` Phase 5.1 — parametrized templates for each workflow command |
+| `references/skill-templates.md` | During `compounding-skills-setup` Phases 5.2–5.3 — skill output templates |
+| `references/agent-templates.md` | During `compounding-skills-setup` Phases 5.5–5.6 — subagent definition templates |
 
 ## Core Principles
 
