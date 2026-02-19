@@ -31,6 +31,8 @@ options:
     description: "Python with Django, FastAPI, or similar"
   - label: "Go"
     description: "Go — standard library or framework"
+  - label: "PHP"
+    description: "PHP with Laravel, Symfony, or similar"
 ```
 
 **Mapping:**
@@ -180,6 +182,12 @@ When generating files for greenfield, use these defaults as starting points:
 - Lint command: `golangci-lint run`
 - Conventions: Standard library first, explicit error handling, short variable names in small scopes
 - Complexity: Flat, explicit over clever
+
+### PHP
+- Test command: `vendor/bin/phpunit` (or `vendor/bin/pest`)
+- Lint command: `vendor/bin/phpcs`
+- Conventions: PSR standards, Laravel/Symfony conventions if using those frameworks
+- Complexity: Pragmatic, prefer readability over DRY
 
 ## Note in Generated Skills
 

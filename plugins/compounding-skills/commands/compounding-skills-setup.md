@@ -150,6 +150,8 @@ options:
     description: "Python with Django, FastAPI, or similar"
   - label: "Go"
     description: "Go — standard library or framework"
+  - label: "PHP"
+    description: "PHP with Laravel, Symfony, or similar"
 ```
 
 **Question 2 — File Structure:**
@@ -431,6 +433,56 @@ options:
   - label: "Raw database/sql"
     description: "Standard library database/sql"
 ```
+
+### PHP Projects
+
+**Question 1 — Framework:**
+```
+question: "Which PHP framework does this project use?"
+header: "Framework"
+options:
+  - label: "Laravel"
+    description: "Full-stack Laravel framework"
+  - label: "Laravel Inertia"
+    description: "Laravel with Inertia.js for frontend"
+  - label: "Symfony"
+    description: "Modular Symfony framework"
+  - label: "CodeIgniter"
+    description: "Lightweight CodeIgniter"
+```
+
+**Question 2 - Testing:**
+```
+question: "Which testing framework does this project use?"
+header: "Testing"
+options:
+  - label: "PHPUnit"
+    description: "Standard PHPUnit testing"
+  - label: "Pest"
+    description: "Elegant testing framework built on PHPUnit"
+  - label: "Codeception"
+    description: "Full-stack testing framework for PHP"
+  - label: "None"
+    description: "No testing framework"
+```
+
+**Question 3 - Frontend Framework:**
+```
+question: "Which frontend framework does this project use (if any)?"
+header: "Frontend"
+options:
+  - label: "Inertia.js with React/Vue/Svelte"
+    description: "Server-driven frontend with Inertia.js"
+  - label: "Livewire"
+    description: "Reactive components with Livewire"
+  - label: "Blade + Alpine.js"
+    description: "Server-rendered Blade templates with Alpine.js sprinkles"
+  - label: "Separate SPA (React/Vue/Angular)"
+    description: "Decoupled frontend application"
+  - label: "None"
+    description: "No frontend framework, server-rendered HTML only"
+```
+
 
 Record all answers as `expert_skill_config` for use in Phase 5.2.
 
