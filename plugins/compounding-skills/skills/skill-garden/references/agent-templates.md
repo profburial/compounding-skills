@@ -202,6 +202,17 @@ Only refine the files passed to you. Do not refactor stable, untouched code.
 - **Short variable names** in small scopes are idiomatic, not a smell
 - **No global state** outside of `main()` initialization
 
+### PHP
+- **Use the frameworks query builder/ORM** for database interactions, avoid raw SQL unless necessary
+- **Prefer traits for shared behavior** over deep inheritance hierarchies
+- **Use dependency injection** for services, avoid service locators
+- **Follow PSR standards** for coding style and autoloading
+- **Use type declarations** for function parameters and return types to improve code clarity and reduce bugs
+- **Avoid overusing magic methods** like `__get` and `__set` as they can make code harder to understand and debug
+- **Use namespaces** to organize code and avoid class name collisions, especially in larger projects
+- **Leverage Laravel's features** (if using Laravel) like Eloquent relationships, middleware, and service providers to keep code clean and maintainable
+- **Thin controllers** — controllers should delegate, not contain logic
+- **Fat models, but not too fat** — business logic in models, but extract to services when a model gets complex
 ---
 
 ## Template 2: Stack-Specific Review Agent

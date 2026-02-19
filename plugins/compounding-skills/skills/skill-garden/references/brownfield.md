@@ -25,6 +25,9 @@ cat pyproject.toml 2>/dev/null | grep -E "^(django|fastapi|flask)" || grep -r "^
 # Go
 head -5 go.mod 2>/dev/null
 
+# PHP
+cat composer.json 2>/dev/null | grep -E "\"laravel/framework\"|\"symfony/symfony\"|\"codeigniter4/codeigniter4\"" 2>/dev/null | head -3
+
 # Framework version
 grep -r "RUBY_VERSION\|node-version\|python_requires" .github/ .tool-versions 2>/dev/null | head -5
 ```
@@ -49,10 +52,14 @@ ls src/ 2>/dev/null
 # For Python
 ls -d */ 2>/dev/null | head -20
 
+# For PHP
+ls -d */ 2>/dev/null | head -20
+
 # Find where the "meat" lives
 find . -name "*.rb" -not -path "*/vendor/*" -not -path "*_spec.rb" | head -30 | sort
 find . -name "*.ts" -not -path "*/node_modules/*" -not -name "*.test.ts" -not -name "*.spec.ts" | head -30 | sort
 find . -name "*.py" -not -path "*/__pycache__/*" -not -name "test_*.py" | head -30 | sort
+find . -name "*.php" -not -path "*/vendor/*" -not -name "*Test.php" | head -30 | sort
 ```
 
 **Patterns to identify:**
@@ -95,6 +102,9 @@ find src -name "*.ts" -not -name "*.test.ts" -not -name "index.ts" -exec wc -l {
 
 # Python: find meaningful module files
 find . -name "*.py" -not -name "test_*.py" -not -name "__init__.py" -exec wc -l {} \; | sort -n | awk '$1 > 30 && $1 < 150' | head -10
+
+# PHP: find meaningful service files
+find . -name "*.php" -not -name "*Test.php" -not -path "*/vendor/*" -exec wc -l {} \; | sort -n | awk '$1 > 30 && $1 < 150' | head -10
 ```
 
 Read the top 3 candidates and pick the most representative.
@@ -103,11 +113,11 @@ Read the top 3 candidates and pick the most representative.
 
 ```bash
 # Test runner
-ls Rakefile Guardfile .rspec pytest.ini jest.config.js jest.config.ts vitest.config.ts go.sum 2>/dev/null
+ls Rakefile Guardfile .rspec pytest.ini jest.config.js jest.config.ts vitest.config.ts go.sum phpunit.xml phpunit.xml.dist 2>/dev/null
 cat package.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('scripts',{}).get('test','not found'))" 2>/dev/null
 
 # Linter config
-ls .rubocop.yml .eslintrc .eslintrc.js .eslintrc.json .eslintrc.yaml pyproject.toml 2>/dev/null
+ls .rubocop.yml .eslintrc .eslintrc.js .eslintrc.json .eslintrc.yaml pyproject.toml .php-cs-fixer.php 2>/dev/null
 cat pyproject.toml 2>/dev/null | grep -A2 "\[tool.ruff\]" | head -5
 
 # CI system
@@ -128,6 +138,7 @@ cat pyproject.toml 2>/dev/null | grep -A2 "\[tool.black\]" | head -3
 | Go test | `ls go.sum` | `go test ./...` |
 | RuboCop | `ls .rubocop.yml` | `bundle exec rubocop` |
 | ESLint | `ls .eslintrc*` | `npm run lint` |
+| PHPUnit | `ls phpunit.xml` | `vendor/bin/phpunit` |
 | Ruff | `pyproject.toml [tool.ruff]` | `ruff check .` |
 
 ## Step 5: Git Workflow Analysis
