@@ -1,0 +1,20 @@
+{
+  "name": "compounding-skills",
+  "owner": {
+    "name": "Terry Harmon",
+    "email": "profburial@gmail.com",
+    "url": "https://github.com/profburial"
+  },
+  "metadata": {
+    "description": "Cursor plugin marketplace for compounding-skills",
+    "version": "1.0.0",
+    "pluginRoot": "plugins"
+  },
+  "plugins": [
+    {
+      "name": "compounding-skills",
+      "source": "compounding-skills",
+      "description": "Skills that compound with your codebase — generates a personalized setup from real code patterns and keeps skills in sync as your codebase evolves."
+    }
+  ]
+}

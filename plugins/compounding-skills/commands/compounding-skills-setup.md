@@ -35,6 +35,20 @@ Also detect the project name from the current directory:
 basename $(pwd)
 ```
 
+Detect which AI coding tool is running this command:
+
+```bash
+# Detect tool
+tool="claude"
+if [ -n "$CURSOR_TRACE_ID" ] || [ -n "$CURSOR_SESSION_ID" ]; then
+  tool="cursor"
+elif command -v cursor &>/dev/null && [ ! -d ".claude" ]; then
+  tool="cursor"
+fi
+```
+
+Set `{tool}` (`claude` or `cursor`) and `{config_dir}` (`.claude` for Claude Code, `.cursor` for Cursor CLI).
+
 Then ask the user to choose their command prefix — this becomes the namespace for all workflow commands:
 
 ```
@@ -51,7 +65,9 @@ options:
 
 If the user selects "Short project alias" or wants a custom name, prompt for the exact string. Record as `{command_prefix}`.
 
-Announce: "Detected [brownfield/greenfield] project. Using `{command_prefix}:` as command prefix. [Analyzing codebase / Running preference interview]..."
+**If `{tool}` is `cursor`:** Note after the prefix question: "Cursor CLI detected — commands will use underscore separator (e.g., `{prefix}_plan` instead of `{prefix}:plan`)."
+
+Announce: "Detected [brownfield/greenfield] project. Detected tool: {tool}. Using `{command_prefix}` as command prefix. [Analyzing codebase / Running preference interview]..."
 
 ## Phase 2A — Brownfield: Codebase Analysis
 
@@ -516,16 +532,23 @@ If "Add a custom agent": prompt for name, description, and what it should focus 
 
 **Process knowledge:** See `references/command-templates.md`, `references/skill-templates.md`, and `references/agent-templates.md` for all templates.
 
-Announce: "Generating your personalized .claude/ library..."
+Announce: "Generating your personalized {config_dir}/ library..."
 
 ### 5.1 — Write Workflow Commands
 
-Write all 5 commands to `.claude/commands/{command_prefix}/`:
+**Claude Code** — write all 5 commands to `.claude/commands/{command_prefix}/` (subfolder per prefix):
 - `.claude/commands/{command_prefix}/brainstorm.md`
 - `.claude/commands/{command_prefix}/plan.md`
 - `.claude/commands/{command_prefix}/work.md`
 - `.claude/commands/{command_prefix}/review.md`
 - `.claude/commands/{command_prefix}/compound.md`
+
+**Cursor CLI** — write all 5 commands to `.cursor/commands/` (flat directory, underscore-separated filenames):
+- `.cursor/commands/{command_prefix}_brainstorm.md`
+- `.cursor/commands/{command_prefix}_plan.md`
+- `.cursor/commands/{command_prefix}_work.md`
+- `.cursor/commands/{command_prefix}_review.md`
+- `.cursor/commands/{command_prefix}_compound.md`
 
 Use the full templates from `references/command-templates.md`, substituting:
 
@@ -539,10 +562,10 @@ Use the full templates from `references/command-templates.md`, substituting:
 - `{workflow_config}` — options selected in Phase 3
 
 **Critical for the compound command:** In Phase 1.4 ("Read Current Skill Files"), list the actual skill files that will be created in Phases 5.2 and 5.3:
-- `.claude/skills/expert-{stack}-developer/SKILL.md`
-- One line per reference file: `.claude/skills/expert-{stack}-developer/references/{layer}.md` (one per layer from `expert_skill_config`)
-- `.claude/skills/expert-bug-hunter/SKILL.md`
-- `.claude/skills/expert-bug-hunter/references/techniques.md`
+- `{config_dir}/skills/expert-{stack}-developer/SKILL.md`
+- One line per reference file: `{config_dir}/skills/expert-{stack}-developer/references/{layer}.md` (one per layer from `expert_skill_config`)
+- `{config_dir}/skills/expert-bug-hunter/SKILL.md`
+- `{config_dir}/skills/expert-bug-hunter/references/techniques.md`
 
 **Critical for the work command:** References to `expert-{stack}-developer` conventions (not a generic name) and `code-simplifier` agent.
 
@@ -550,7 +573,7 @@ Use the full templates from `references/command-templates.md`, substituting:
 
 ### 5.2 — Write Expert-{Stack}-Developer Skill
 
-Write `.claude/skills/expert-{stack}-developer/SKILL.md` using the Expert-Developer Skill template from `references/skill-templates.md`.
+Write `{config_dir}/skills/expert-{stack}-developer/SKILL.md` using the Expert-Developer Skill template from `references/skill-templates.md`.
 
 **SKILL.md frontmatter:**
 ```yaml
@@ -573,7 +596,7 @@ disable-model-invocation: false
    - A link: `See [references/{layer}.md](references/{layer}.md) for annotated examples.`
 4. **Error Handling** — error types → HTTP status mapping for the stack
 
-**Then write one reference file per layer** at `.claude/skills/expert-{stack}-developer/references/{layer}.md`:
+**Then write one reference file per layer** at `{config_dir}/skills/expert-{stack}-developer/references/{layer}.md`:
 
 **Brownfield:**
 1. Use `Glob` / `Grep` to find 1-2 representative files for this layer (check `app/`, `src/`, `lib/`, `pkg/`)
@@ -587,9 +610,9 @@ disable-model-invocation: false
 
 ### 5.3 — Write Expert-Bug-Hunter Skill
 
-**Always generated.** Write three files at `.claude/skills/expert-bug-hunter/`:
+**Always generated.** Write three files at `{config_dir}/skills/expert-bug-hunter/`:
 
-**`.claude/skills/expert-bug-hunter/SKILL.md`** — A systematic debugging guide adapted for this project's stack and tooling. Include:
+**`{config_dir}/skills/expert-bug-hunter/SKILL.md`** — A systematic debugging guide adapted for this project's stack and tooling. Include:
 - Frontmatter: `name: expert-bug-hunter`, `description: Systematically debug {stack} issues — reproduces bugs, traces requests, inspects state, and identifies root causes`, `argument-hint: [bug description or error message]`, `disable-model-invocation: true`
 - Phase 1: Triage — search codebase with Grep/Glob, check recent `git log`, locate specs. Reference actual spec directories from Phase 2A (e.g., `spec/controllers/`, `spec/services/`)
 - Phase 2: Reproduce — write a minimal failing spec using the project's test runner (`{test_command}`)
@@ -598,14 +621,14 @@ disable-model-invocation: false
 - Link to `references/techniques.md` throughout for detailed how-tos
 - Rules: always clean up debugger statements, use `{lint_command}` on any touched files, ask before destructive operations
 
-**`.claude/skills/expert-bug-hunter/README.md`** — Usage guide with:
+**`{config_dir}/skills/expert-bug-hunter/README.md`** — Usage guide with:
 - What it does (4-step description)
 - Usage examples with realistic invocations for this project's domain
 - Techniques table (technique → when to use)
 - How it integrates with the other `{command_prefix}:` commands
 - When to use it (good cases) vs. when to skip it
 
-**`.claude/skills/expert-bug-hunter/references/techniques.md`** — Detailed debugging how-tos, adapted for this project:
+**`{config_dir}/skills/expert-bug-hunter/references/techniques.md`** — Detailed debugging how-tos, adapted for this project:
 
 **Brownfield:** Use Phase 2A findings to populate real file paths:
 - Reproduction spec templates using the project's actual test helper paths and auth patterns
@@ -619,7 +642,7 @@ disable-model-invocation: false
 
 ### 5.5 — Write Code-Simplifier Agent
 
-**Always generated.** Write `.claude/agents/code-simplifier.md`.
+**Always generated.** Write `{config_dir}/agents/code-simplifier.md`.
 
 **Process knowledge:** See `references/agent-templates.md` for the code-simplifier template.
 
@@ -636,9 +659,9 @@ The agent's `skills:` frontmatter must reference `expert-{stack}-developer` (not
 
 ### 5.6 — Write Selected Review Agents
 
-For each agent selected in Phase 4, write `.claude/agents/{agent-name}.md` using the template from `references/agent-templates.md`.
+For each agent selected in Phase 4, write `{config_dir}/agents/{agent-name}.md` using the template from `references/agent-templates.md`.
 
-For custom agents: write `.claude/agents/{custom-name}.md` with the description and focus areas provided.
+For custom agents: write `{config_dir}/agents/{custom-name}.md` with the description and focus areas provided.
 
 ### 5.7 — Ask About Additional Skills
 
@@ -654,17 +677,26 @@ options:
     description: "Describe a specialized skill — e.g., domain conventions, external API patterns, deployment procedures"
 ```
 
-If "Yes": ask for the skill name and description. Generate `.claude/skills/{skill-name}/SKILL.md` using the New Pattern Skill template from `references/skill-templates.md`. Allow multiple additions by asking again until the user is done.
+If "Yes": ask for the skill name and description. Generate `{config_dir}/skills/{skill-name}/SKILL.md` using the New Pattern Skill template from `references/skill-templates.md`. Allow multiple additions by asking again until the user is done.
 
 ### 5.8 — Create Directory Structure
 
-Ensure all needed directories exist:
+Ensure all needed directories exist.
 
+**Claude Code:**
 ```bash
 mkdir -p .claude/commands/{command_prefix} \
           .claude/skills/expert-{stack}-developer/references \
           .claude/skills/expert-bug-hunter/references \
           .claude/agents
+```
+
+**Cursor CLI:**
+```bash
+mkdir -p .cursor/commands \
+          .cursor/skills/expert-{stack}-developer/references \
+          .cursor/skills/expert-bug-hunter/references \
+          .cursor/agents
 ```
 
 Create plan and brainstorm directories:
@@ -674,8 +706,9 @@ mkdir -p {plan_dir} docs/brainstorms docs/learnings
 
 ## Phase 6 — Summary
 
-Display a summary of everything created:
+Display a summary of everything created.
 
+**Claude Code summary:**
 ```
 ✓ Setup complete
 
@@ -707,4 +740,38 @@ Start with:
   /{command_prefix}:compound     — update skills after shipping
 
 Run /{command_prefix}:compound after each feature to keep skills in sync.
+```
+
+**Cursor CLI summary:**
+```
+✓ Setup complete
+
+Commands (.cursor/commands/):
+  ✓ {command_prefix}_brainstorm.md   → /{command_prefix}_brainstorm
+  ✓ {command_prefix}_plan.md         → /{command_prefix}_plan
+  ✓ {command_prefix}_work.md         → /{command_prefix}_work
+  ✓ {command_prefix}_review.md       → /{command_prefix}_review
+  ✓ {command_prefix}_compound.md     → /{command_prefix}_compound
+
+Skills:
+  ✓ .cursor/skills/expert-{stack}-developer/SKILL.md
+  ✓ .cursor/skills/expert-{stack}-developer/references/{layer-1}.md
+  ✓ .cursor/skills/expert-{stack}-developer/references/{layer-2}.md
+  ... (one reference file per architectural layer)
+  ✓ .cursor/skills/expert-bug-hunter/SKILL.md
+  ✓ .cursor/skills/expert-bug-hunter/README.md
+  ✓ .cursor/skills/expert-bug-hunter/references/techniques.md
+  ... (any additional skills requested in Phase 5.7)
+
+Agents:
+  ✓ .cursor/agents/code-simplifier.md  ← always included
+  ✓ .cursor/agents/{selected-agent}.md
+  ... (for each selected agent)
+
+Start with:
+  /{command_prefix}_brainstorm   — explore a feature idea
+  /{command_prefix}_plan         — create an implementation plan
+  /{command_prefix}_compound     — update skills after shipping
+
+Run /{command_prefix}_compound after each feature to keep skills in sync.
 ```

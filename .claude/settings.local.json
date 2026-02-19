@@ -6,7 +6,8 @@
       "Bash(git config:*)",
       "WebFetch(domain:api.github.com)",
       "WebSearch",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(xargs:*)"
     ]
   }
 }

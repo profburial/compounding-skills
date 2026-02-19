@@ -1,6 +1,6 @@
-# Compounding Skills 
+<img src="logo.svg" alt="Compounding Skills" width="520"/>
 
-A Claude Code plugin that helps you create workflow commands, custom skills, and agents based on your preferences. 
+A Claude Code plugin that helps you create workflow commands, custom skills, and agents based on your preferences.
 
 ## Philosophy
 
