@@ -1,18 +1,18 @@
-<svg width="520" height="180" viewBox="0 0 520 180" xmlns="http://www.w3.org/2000/svg" fill="none">
+<svg width="560" height="180" viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg" fill="none">
   <defs>
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1E3A8A"/>
-      <stop offset="100%" stop-color="#0F766E"/>
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#22D3EE"/>
     </linearGradient>
   </defs>
 
   <!-- Icon -->
   <g transform="translate(30,20)">
-
+    
     <!-- Outer boundary circle -->
-    <circle cx="70" cy="70" r="65" stroke="#111827" stroke-width="2"/>
+    <circle cx="70" cy="70" r="65" stroke="#E5E7EB" stroke-width="2"/>
 
-    <!-- Golden-ratio inspired spiral -->
+    <!-- Spiral -->
     <path d="
       M70 70
       m0 -50
@@ -26,25 +26,25 @@
       stroke-linecap="round"/>
 
     <!-- Center node -->
-    <circle cx="70" cy="70" r="4" fill="#111827"/>
+    <circle cx="70" cy="70" r="4" fill="#E5E7EB"/>
   </g>
 
   <!-- Typography -->
-  <text x="160" y="80"
-        font-family="Georgia, 'Times New Roman', serif"
-        font-size="34"
-        font-weight="500"
-        fill="#111827"
+  <text x="170" y="82"
+        font-family="Inter, SF Pro Display, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+        font-size="36"
+        font-weight="600"
+        fill="#F9FAFB"
         letter-spacing="0.5">
     Compounding
   </text>
 
-  <text x="160" y="115"
-        font-family="Georgia, 'Times New Roman', serif"
-        font-size="30"
+  <text x="170" y="118"
+        font-family="Inter, SF Pro Display, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+        font-size="32"
         font-weight="300"
-        fill="#374151"
-        letter-spacing="2">
+        fill="#9CA3AF"
+        letter-spacing="4">
     SKILLS
   </text>
 </svg>
