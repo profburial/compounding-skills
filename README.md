@@ -1,6 +1,6 @@
 <img src="logo.svg" alt="Compounding Skills" width="520"/>
 
-A Claude Code plugin that helps you create workflow commands, custom skills, and agents based on your preferences.
+A plugin that helps you create workflow commands, custom skills, and agents based on your preferences.
 
 ## Philosophy
 
@@ -16,11 +16,13 @@ The plugin produces a full development loop:
 brainstorm → plan → work → review → compound
 ```
 
-- **`/{prefix}:brainstorm`** — explore requirements and approaches before committing
-- **`/{prefix}:plan`** — turn a feature into a structured implementation plan
-- **`/{prefix}:work`** — execute a plan with quality checks and auto-simplification built in
-- **`/{prefix}:review`** — exhaustive code review using project-specific conventions
-- **`/{prefix}:compound`** — extract patterns from what was just built; update skills
+| Command | Claude Code | Cursor | What it does |
+|---------|------------|--------|--------------|
+| brainstorm | `/{prefix}:brainstorm` | `/{prefix}_brainstorm` | Explore requirements and approaches before committing |
+| plan | `/{prefix}:plan` | `/{prefix}_plan` | Turn a feature into a structured implementation plan |
+| work | `/{prefix}:work` | `/{prefix}_work` | Execute a plan with quality checks and auto-simplification |
+| review | `/{prefix}:review` | `/{prefix}_review` | Exhaustive code review using project-specific conventions |
+| compound | `/{prefix}:compound` | `/{prefix}_compound` | Extract patterns from what was just built; update skills |
 
 For existing projects, the setup command explores your code to find examples of common patterns and conventions to bake directly into your skills.
 
@@ -28,21 +30,39 @@ For new projects, the plugin will ask you various questions based on your langua
 
 ## Installation
 
+### Claude Code 
+
 ```
 /plugin marketplace add profburial/compounding-skills
 /plugin install compounding-skills
 ```
 
-Then run the setup wizard **once**:
+### Cursor
+
+Coming soon!
+
+### Setup
+
+**Claude Code** — run the setup wizard once:
 
 ```
 /init
 /compounding-skills-setup
 ```
 
-`/init` generates your `CLAUDE.md`. `/compounding-skills-setup` builds your personalized `.claude/` library on top of it.
+`/init` generates your `CLAUDE.md`. `/compounding-skills-setup` builds your personalized skills library on top of it.
+
+**Cursor** — run the setup wizard once:
+
+```
+/compounding-skills-setup
+```
+
+The wizard detects Cursor automatically and writes everything to `.cursor/`.
 
 ## What Setup Produces
+
+**Claude Code** (`.claude/`):
 
 ```
 .claude/
@@ -65,6 +85,31 @@ Then run the setup wizard **once**:
 │           └── techniques.md
 └── agents/
     ├── code-simplifier.md           ← tailored to your complexity style
+    └── {stack-specific reviewers}
+```
+
+**Cursor** (`.cursor/`):
+
+```
+.cursor/
+├── commands/
+│   ├── {prefix}_brainstorm.md
+│   ├── {prefix}_plan.md
+│   ├── {prefix}_work.md
+│   ├── {prefix}_review.md
+│   └── {prefix}_compound.md
+├── skills/
+│   ├── expert-{stack}-developer/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       └── {layer}.md
+│   └── expert-bug-hunter/
+│       ├── SKILL.md
+│       ├── README.md
+│       └── references/
+│           └── techniques.md
+└── agents/
+    ├── code-simplifier.md
     └── {stack-specific reviewers}
 ```
 
