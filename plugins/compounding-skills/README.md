@@ -4,7 +4,7 @@
 
 The compound-engineering-plugin provides excellent generic workflow commands and a large library of agents. But those skills and agents are authored once and never evolve — they don't know *how you code*.
 
-**compounding-skills** fixes this: it generates a personalized setup tailored to your project's actual patterns, then keeps those skills in sync as your codebase evolves. Works with both **Claude Code** (writes to `.claude/`) and **Cursor** (writes to `.cursor/`).
+**compounding-skills** fixes this: it generates a personalized `.claude/` setup tailored to your project's actual patterns, then keeps those skills in sync as your codebase evolves.
 
 ## Commands
 
@@ -12,12 +12,9 @@ The compound-engineering-plugin provides excellent generic workflow commands and
 
 Run **once** after installing the plugin. Builds your config library from scratch. Never run again on the same project.
 
-Command syntax differs by tool:
-
-| Tool | Setup command | Workflow commands |
-|------|--------------|-------------------|
-| Claude Code | `/compounding-skills-setup` | `/{prefix}:brainstorm`, `/{prefix}:plan`, etc. |
-| Cursor | `/compounding-skills_setup` | `/{prefix}_brainstorm`, `/{prefix}_plan`, etc. |
+```
+/compounding-skills-setup
+```
 
 - **Brownfield projects**: Analyzes real code to extract patterns, conventions, and examples
 - **Greenfield projects**: Interviews you about your preferences
@@ -29,11 +26,30 @@ Generates:
 - A `code-simplifier` agent built from real code examples showing your complexity preferences
 - Stack-specific review agents (Rails, TypeScript, Python, etc.)
 
-After setup, use your generated `{prefix}:compound` (or `{prefix}_compound`) command to keep skills in sync as your codebase evolves.
+After setup, use your generated `{prefix}:compound` command to keep skills in sync as your codebase evolves.
+
+### Skill Audit — Evaluate & Improve Generated Skills
+
+Run **after** setup to verify your generated skills actually improve Claude's output. Uses the same evaluation playbook as Anthropic's official skill-creator plugin.
+
+```
+/compounding-skills-audit
+```
+
+What it does:
+
+1. **Discovers** your generated skills (expert-developer, bug-hunter, etc.)
+2. **Generates test cases** — realistic prompts that exercise what the skill teaches
+3. **Runs dual comparisons** — every test runs with the skill AND without it (baseline)
+4. **Grades outputs** — structured assertions evaluated by a grading agent
+5. **Benchmarks** — aggregates pass rates, timing, and token usage with statistical summaries
+6. **Opens an interactive viewer** — review outputs qualitatively and see quantitative benchmarks side-by-side
+7. **Iterates** — improves the skill based on your feedback, then reruns until you're satisfied
+8. **Optimizes descriptions** (optional) — tunes the skill's trigger description for better invocation accuracy
+
+The audit answers a concrete question: *does this skill actually make Claude better at coding in your project, or is it just taking up context window space?*
 
 ## Installation
-
-**Claude Code:**
 
 ```
 /plugin marketplace add https://github.com/profburial/compounding-skills
@@ -49,15 +65,6 @@ Then run the one-time setup wizard:
 
 Run `/init` first to generate your `CLAUDE.md`. Then run `/compounding-skills-setup` to build your personalized `.claude/` library on top of it.
 
-**Cursor:**
-
-```
-/plugin install compounding-skills
-/compounding-skills_setup
-```
-
-Note: `/init` is Claude Code specific. In Cursor, the setup wizard handles project context directly — just run `/compounding-skills_setup` to start.
-
 Never run the setup command again on the same project.
 
 ## How It Works
@@ -65,11 +72,11 @@ Never run the setup command again on the same project.
 ```
 Install → setup command (once, never again)
              ↓
-         Detect tool (Claude Code or Cursor)
-             ↓
          Analyze codebase OR interview you
              ↓
-         Write tailored config files (.claude/ or .cursor/)
+         Write tailored .claude/ config files
+             ↓
+         audit command (optional, verify skills work)
              ↓
          Code, ship features
              ↓
@@ -79,8 +86,6 @@ Install → setup command (once, never again)
              ↓
          Skills compound with your codebase
 ```
-
-The wizard auto-detects whether you're running in Claude Code or Cursor and writes all output to the correct directory (`.claude/` or `.cursor/`).
 
 ## The Key Differentiator
 
@@ -96,8 +101,6 @@ The `code-simplifier` agent, for example, uses actual before/after refactors fro
 ## Files Generated
 
 After running the setup wizard, your project will have:
-
-**Claude Code** (`.claude/`):
 
 ```
 .claude/
@@ -121,31 +124,5 @@ After running the setup wizard, your project will have:
 │           └── techniques.md
 └── agents/
     ├── code-simplifier.md              ← Tailored to your complexity style
-    └── {other agents}.md
-```
-
-**Cursor** (`.cursor/`):
-
-```
-.cursor/
-├── commands/
-│   ├── {prefix}_brainstorm.md
-│   ├── {prefix}_plan.md
-│   ├── {prefix}_work.md
-│   ├── {prefix}_review.md
-│   └── {prefix}_compound.md
-├── skills/
-│   ├── expert-{stack}-developer/
-│   │   ├── SKILL.md
-│   │   └── references/
-│   │       ├── {layer-1}.md
-│   │       └── {layer-2}.md
-│   └── expert-bug-hunter/
-│       ├── SKILL.md
-│       ├── README.md
-│       └── references/
-│           └── techniques.md
-└── agents/
-    ├── code-simplifier.md
     └── {other agents}.md
 ```

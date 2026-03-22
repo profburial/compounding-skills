@@ -16,34 +16,29 @@ The plugin produces a full development loop:
 brainstorm → plan → work → review → compound
 ```
 
-| Command | Claude Code | Cursor | What it does |
-|---------|------------|--------|--------------|
-| brainstorm | `/{prefix}:brainstorm` | `/{prefix}_brainstorm` | Explore requirements and approaches before committing |
-| plan | `/{prefix}:plan` | `/{prefix}_plan` | Turn a feature into a structured implementation plan |
-| work | `/{prefix}:work` | `/{prefix}_work` | Execute a plan with quality checks and auto-simplification |
-| review | `/{prefix}:review` | `/{prefix}_review` | Exhaustive code review using project-specific conventions |
-| compound | `/{prefix}:compound` | `/{prefix}_compound` | Extract patterns from what was just built; update skills |
+| Command | Usage | What it does |
+|---------|-------|--------------|
+| brainstorm | `/{prefix}:brainstorm` | Explore requirements and approaches before committing |
+| plan | `/{prefix}:plan` | Turn a feature into a structured implementation plan |
+| work | `/{prefix}:work` | Execute a plan with quality checks and auto-simplification |
+| review | `/{prefix}:review` | Exhaustive code review using project-specific conventions |
+| compound | `/{prefix}:compound` | Extract patterns from what was just built; update skills |
 
 For existing projects, the setup command explores your code to find examples of common patterns and conventions to bake directly into your skills.
 
-For new projects, the plugin will ask you various questions based on your language/framework of choice to lay a solid foundation to compound on. 
+For new projects, the plugin will ask you various questions based on your language/framework of choice to lay a solid foundation to compound on.
+
 
 ## Installation
-
-### Claude Code 
 
 ```
 /plugin marketplace add profburial/compounding-skills
 /plugin install compounding-skills
 ```
 
-### Cursor
-
-Coming soon!
-
 ### Setup
 
-**Claude Code** — run the setup wizard once:
+Run the setup wizard once:
 
 ```
 /init
@@ -52,17 +47,7 @@ Coming soon!
 
 `/init` generates your `CLAUDE.md`. `/compounding-skills-setup` builds your personalized skills library on top of it.
 
-**Cursor** — run the setup wizard once:
-
-```
-/compounding-skills-setup
-```
-
-The wizard detects Cursor automatically and writes everything to `.cursor/`.
-
 ## What Setup Produces
-
-**Claude Code** (`.claude/`):
 
 ```
 .claude/
@@ -88,30 +73,25 @@ The wizard detects Cursor automatically and writes everything to `.cursor/`.
     └── {stack-specific reviewers}
 ```
 
-**Cursor** (`.cursor/`):
+## Skill Audit
+
+After setup, you can audit your generated skills to verify they actually improve Claude's output. The audit command uses the same evaluation playbook as Anthropic's official skill-creator plugin.
 
 ```
-.cursor/
-├── commands/
-│   ├── {prefix}_brainstorm.md
-│   ├── {prefix}_plan.md
-│   ├── {prefix}_work.md
-│   ├── {prefix}_review.md
-│   └── {prefix}_compound.md
-├── skills/
-│   ├── expert-{stack}-developer/
-│   │   ├── SKILL.md
-│   │   └── references/
-│   │       └── {layer}.md
-│   └── expert-bug-hunter/
-│       ├── SKILL.md
-│       ├── README.md
-│       └── references/
-│           └── techniques.md
-└── agents/
-    ├── code-simplifier.md
-    └── {stack-specific reviewers}
+/compounding-skills-audit
 ```
+
+The audit:
+
+1. **Discovers** your generated skills and lets you pick which to evaluate
+2. **Generates test cases** — realistic prompts that exercise what the skill teaches
+3. **Runs dual comparisons** — every test runs with the skill AND without it (baseline)
+4. **Grades and benchmarks** — structured assertions, pass rates, timing, and token usage
+5. **Opens an interactive viewer** — review outputs qualitatively alongside quantitative benchmarks
+6. **Iterates** — improves the skill based on your feedback, reruns until you're satisfied
+7. **Optimizes descriptions** (optional) — tunes trigger accuracy so the skill fires when it should
+
+This answers a concrete question: *does this skill actually make Claude better at coding in your project, or is it just taking up context window space?*
 
 ## License
 
