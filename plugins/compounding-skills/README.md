@@ -28,9 +28,9 @@ Generates:
 
 After setup, use your generated `{prefix}:compound` command to keep skills in sync as your codebase evolves.
 
-### Skill Audit — Evaluate & Improve Generated Skills
+### Skill & Command Audit — Evaluate & Improve
 
-Run **after** setup to verify your generated skills actually improve Claude's output. Uses the same evaluation playbook as Anthropic's official skill-creator plugin.
+Run **after** setup to verify your generated skills and commands actually improve Claude's output. Uses the same evaluation playbook as Anthropic's official skill-creator plugin.
 
 ```
 /compounding-skills-audit
@@ -38,16 +38,16 @@ Run **after** setup to verify your generated skills actually improve Claude's ou
 
 What it does:
 
-1. **Discovers** your generated skills (expert-developer, bug-hunter, etc.)
-2. **Generates test cases** — realistic prompts that exercise what the skill teaches
-3. **Runs dual comparisons** — every test runs with the skill AND without it (baseline)
+1. **Discovers** your generated skills and commands
+2. **Generates test cases** — realistic prompts that exercise what each skill/command provides
+3. **Runs dual comparisons** — every test runs with the skill/command AND without it (baseline)
 4. **Grades outputs** — structured assertions evaluated by a grading agent
 5. **Benchmarks** — aggregates pass rates, timing, and token usage with statistical summaries
 6. **Opens an interactive viewer** — review outputs qualitatively and see quantitative benchmarks side-by-side
-7. **Iterates** — improves the skill based on your feedback, then reruns until you're satisfied
-8. **Optimizes descriptions** (optional) — tunes the skill's trigger description for better invocation accuracy
+7. **Iterates** — improves based on your feedback, then reruns until you're satisfied
+8. **Optimizes descriptions** (optional) — tunes trigger descriptions for better invocation accuracy
 
-The audit answers a concrete question: *does this skill actually make Claude better at coding in your project, or is it just taking up context window space?*
+The audit answers a concrete question: *does this skill or command actually make Claude better at coding in your project, or is it just taking up context window space?*
 
 ## Installation
 

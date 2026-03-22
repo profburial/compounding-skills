@@ -1,6 +1,6 @@
 {
   "name": "compounding-skills",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Skills that compound with your codebase — generates a personalized .claude/ setup from real code patterns and keeps skills in sync as your codebase evolves.",
   "author": {
     "name": "Terry Harmon",

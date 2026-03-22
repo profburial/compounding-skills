@@ -72,9 +72,9 @@ Run the setup wizard once:
     └── {stack-specific reviewers}
 ```
 
-## Skill Audit
+## Audit
 
-After setup, you can audit your generated skills to verify they actually improve Claude's output. The audit command uses the same evaluation playbook as Anthropic's official skill-creator plugin.
+After setup, you can audit your generated skills and commands to verify they actually improve Claude's output. The audit command uses the same evaluation playbook as Anthropic's official skill-creator plugin.
 
 ```
 /compounding-skills-audit
@@ -82,15 +82,15 @@ After setup, you can audit your generated skills to verify they actually improve
 
 The audit:
 
-1. **Discovers** your generated skills and lets you pick which to evaluate
-2. **Generates test cases** — realistic prompts that exercise what the skill teaches
-3. **Runs dual comparisons** — every test runs with the skill AND without it (baseline)
+1. **Discovers** your generated skills and commands, lets you pick which to evaluate
+2. **Generates test cases** — realistic prompts that exercise what each skill/command provides
+3. **Runs dual comparisons** — every test runs with the skill/command AND without it (baseline)
 4. **Grades and benchmarks** — structured assertions, pass rates, timing, and token usage
 5. **Opens an interactive viewer** — review outputs qualitatively alongside quantitative benchmarks
-6. **Iterates** — improves the skill based on your feedback, reruns until you're satisfied
-7. **Optimizes descriptions** (optional) — tunes trigger accuracy so the skill fires when it should
+6. **Iterates** — improves based on your feedback, reruns until you're satisfied
+7. **Optimizes descriptions** (optional) — tunes trigger accuracy so skills fire when they should
 
-This answers a concrete question: *does this skill actually make Claude better at coding in your project, or is it just taking up context window space?*
+This answers a concrete question: *does this skill or command actually make Claude better at coding in your project, or is it just taking up context window space?*
 
 ## License
 
