@@ -91,6 +91,23 @@ Present the test cases to the user: "Here are the test cases I'd like to run. Do
 
 Wait for confirmation before proceeding.
 
+### Choose Run Mode
+
+After the user confirms test cases, ask how they'd like to run the evals:
+
+Use **AskUserQuestion**:
+```
+question: "How would you like to run the evals?"
+header: "Eval run mode"
+options:
+  - label: "Sequential (recommended)"
+    description: "Run one eval pair at a time, grade inline. Lighter on resources, more reliable. Uses 2 sub-agents at a time."
+  - label: "Parallel"
+    description: "Launch all eval pairs at once, grade via sub-agents. Faster but heavier — uses up to (N × 2) + (N × 2) sub-agents. May hit auth limits on large runs."
+```
+
+Save the chosen mode — it determines behavior in Phase 3 and Phase 4.
+
 ### Save Test Cases
 
 After the user confirms, determine the path to the skill-auditor's scripts. The skill-auditor is bundled with this plugin — find it relative to this command file:
@@ -126,9 +143,13 @@ Use the schema from `skill-auditor/references/schemas.md`. Don't write assertion
 
 ## Phase 3 — Run Eval Pairs
 
-For each test case, spawn **two subagents in the same turn** — one with the skill/command, one without. Launch everything at once so it all finishes around the same time.
+The behavior of this phase depends on the run mode chosen in Phase 2.
 
-### For Skills
+### Eval Agent Prompts
+
+Use these prompts for spawning eval sub-agents. The run mode determines **when** they're launched, not **what** they do.
+
+#### For Skills
 
 **With-skill run:**
 
@@ -155,7 +176,7 @@ Execute this task:
 - When done, save a transcript of your work as transcript.md in the outputs directory
 ```
 
-### For Commands
+#### For Commands
 
 **With-command run:**
 
@@ -183,38 +204,27 @@ Execute this task:
 - When done, save a transcript of your work as transcript.md in the outputs directory
 ```
 
-Write an `eval_metadata.json` for each eval directory:
-```json
-{
-  "eval_id": 1,
-  "eval_name": "descriptive-name-here",
-  "prompt": "The test prompt",
-  "assertions": []
-}
-```
+### Sequential Mode (default)
 
-### Capture Timing
+Process one eval at a time. For each eval:
 
-When each subagent completes, the task notification includes `total_tokens` and `duration_ms`. Save this data immediately to `timing.json` in the run directory — this is the only chance to capture it.
+1. **Spawn the pair** — launch the with-skill and without-skill agents together (2 agents at once)
+2. **Wait for both to complete** — capture timing data from the completion notifications
+3. **Draft assertions** for this eval while outputs are fresh
+4. **Grade inline** — read the outputs and transcript yourself, then write `grading.json` following the grader protocol in `skill-auditor/agents/grader.md`. For assertions that can be checked programmatically (file exists, contains pattern), run a script instead.
+5. **Move to the next eval**
 
-### Draft Assertions While Waiting
+This keeps max concurrency at 2 sub-agents and eliminates grader sub-agents entirely.
 
-While runs are in progress, draft quantitative assertions for each test case. Good assertions are:
-- Objectively verifiable (not subjective quality judgments)
-- Discriminating (they should pass with the skill and fail without it)
-- Named descriptively so they're clear in the benchmark viewer
+### Parallel Mode
 
-Update `eval_metadata.json` and `evals/evals.json` with the assertions.
+Launch everything at once for maximum speed:
 
-## Phase 4 — Grade, Aggregate, and Review
+1. **Spawn all pairs in one turn** — launch with-skill and without-skill agents for every eval simultaneously
+2. **Draft assertions** for all evals while waiting
+3. **Capture timing** as each agent completes
+4. **Grade via sub-agents** — for each run, spawn a grader sub-agent:
 
-Once all runs complete:
-
-### 4.1 Grade Each Run
-
-For each run (with_skill and without_skill), spawn a grader subagent. Read `skill-auditor/agents/grader.md` for the grading protocol.
-
-The grader prompt:
 ```
 You are a grader. Read the grading instructions at: {auditor-path}/agents/grader.md
 
@@ -228,9 +238,34 @@ Save grading results to: {run-dir}/grading.json
 Use the exact schema from {auditor-path}/references/schemas.md — the viewer depends on the field names "text", "passed", and "evidence" in the expectations array.
 ```
 
-For assertions that can be checked programmatically (file exists, contains specific pattern, correct structure), write and run a script instead of relying on the grader — scripts are faster and more reliable.
+For assertions that can be checked programmatically, write and run a script instead of relying on the grader.
 
-### 4.2 Aggregate Benchmark
+### Shared Steps (both modes)
+
+Write an `eval_metadata.json` for each eval directory:
+```json
+{
+  "eval_id": 1,
+  "eval_name": "descriptive-name-here",
+  "prompt": "The test prompt",
+  "assertions": []
+}
+```
+
+When each subagent completes, the task notification includes `total_tokens` and `duration_ms`. Save this data immediately to `timing.json` in the run directory — this is the only chance to capture it.
+
+Assertions should be:
+- Objectively verifiable (not subjective quality judgments)
+- Discriminating (they should pass with the skill and fail without it)
+- Named descriptively so they're clear in the benchmark viewer
+
+Update `eval_metadata.json` and `evals/evals.json` with the assertions.
+
+## Phase 4 — Grade, Aggregate, and Review
+
+Once all runs are complete and graded (inline for sequential mode, via sub-agents for parallel mode):
+
+### 4.1 Aggregate Benchmark
 
 Run the aggregation script:
 
@@ -240,14 +275,14 @@ python -m scripts.aggregate_benchmark {workspace}/iteration-{N} --skill-name {na
 
 Run this from the `skill-auditor` directory so the module resolves correctly. This produces `benchmark.json` and `benchmark.md`.
 
-### 4.3 Analyst Pass
+### 4.2 Analyst Pass
 
 Read the benchmark data and surface patterns the aggregate stats might hide. See `skill-auditor/agents/analyzer.md` (the "Analyzing Benchmark Results" section) for what to look for:
 - Assertions that always pass regardless of skill (non-discriminating)
 - High-variance evals (possibly flaky)
 - Time/token tradeoffs
 
-### 4.4 Launch the Viewer
+### 4.3 Launch the Viewer
 
 Generate the interactive review viewer:
 
