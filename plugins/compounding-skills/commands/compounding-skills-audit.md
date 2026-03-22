@@ -141,9 +141,9 @@ Use the schema from `skill-auditor/references/schemas.md`. Don't write assertion
 }
 ```
 
-## Phase 3 — Run Eval Pairs
+## Phase 3 — Run Evals
 
-The behavior of this phase depends on the run mode chosen in Phase 2.
+Run eval pairs **one subagent at a time** to avoid rate limits. For each test case, run the with-skill/command version first, wait for it to complete, then run the baseline. Do not spawn multiple subagents in parallel.
 
 ### Eval Agent Prompts
 
@@ -151,9 +151,9 @@ Use these prompts for spawning eval sub-agents. The run mode determines **when**
 
 #### For Skills
 
-**With-skill run:**
+**Step 1 — With-skill run:**
 
-Spawn an Agent subagent with this prompt:
+Spawn a single Agent subagent and wait for it to complete:
 ```
 Execute this task:
 - First read the skill at: {path-to-skill-being-audited}/SKILL.md and all its reference files
@@ -164,9 +164,9 @@ Execute this task:
 - When done, save a transcript of your work as transcript.md in the outputs directory
 ```
 
-**Without-skill run (baseline):**
+**Step 2 — Without-skill run (baseline):**
 
-Spawn an Agent subagent with this prompt:
+After the with-skill run completes, spawn the baseline:
 ```
 Execute this task:
 - Task: {eval prompt}
@@ -176,11 +176,13 @@ Execute this task:
 - When done, save a transcript of your work as transcript.md in the outputs directory
 ```
 
-#### For Commands
+Then move to the next test case. Complete all test cases for one eval before starting the next.
 
-**With-command run:**
+### For Commands
 
-Spawn an Agent subagent with this prompt:
+**Step 1 — With-command run:**
+
+Spawn a single Agent subagent and wait for it to complete:
 ```
 Execute this task by following the command workflow:
 - First read the command at: {path-to-command-being-audited}
@@ -192,9 +194,9 @@ Execute this task by following the command workflow:
 - When done, save a transcript of your work as transcript.md in the outputs directory
 ```
 
-**Without-command run (baseline):**
+**Step 2 — Without-command run (baseline):**
 
-Spawn an Agent subagent with this prompt:
+After the with-command run completes, spawn the baseline:
 ```
 Execute this task:
 - Task: {eval prompt}
@@ -225,6 +227,13 @@ Launch everything at once for maximum speed:
 3. **Capture timing** as each agent completes
 4. **Grade via sub-agents** — for each run, spawn a grader sub-agent:
 
+Once all runs complete:
+
+### 4.1 Grade Each Run
+
+Grade runs **one at a time** to avoid rate limits. For each run (with_skill and without_skill), spawn a single grader subagent, wait for it to complete, then grade the next run. Read `skill-auditor/agents/grader.md` for the grading protocol.
+
+The grader prompt:
 ```
 You are a grader. Read the grading instructions at: {auditor-path}/agents/grader.md
 
