@@ -189,7 +189,19 @@ When generating files for greenfield, use these defaults as starting points:
 - Conventions: PSR standards, Laravel/Symfony conventions if using those frameworks
 - Complexity: Pragmatic, prefer readability over DRY
 
-## Note in Generated Skills
+## Writing Greenfield Skills
+
+### Include Reasoning
+
+Even though greenfield skills are based on preferences rather than observed code, include reasoning for each rule. The interview answers tell you *what* the user prefers — infer *why* from the choice and include it:
+
+- TDD → "Write tests first because it clarifies the interface before implementation and catches design problems early."
+- Feature branches + PRs → "Use feature branches to keep main deployable and enable code review before merge."
+- Small functions → "Prefer small, focused functions because they're easier to test, name, and reuse."
+
+Skills with reasoning produce better results than bare rules, even when the reasoning is standard.
+
+### Include the Evolution Note
 
 Always include this note in greenfield-generated skills:
 

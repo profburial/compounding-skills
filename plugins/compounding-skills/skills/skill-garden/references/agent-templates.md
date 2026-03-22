@@ -74,24 +74,24 @@ Follow the established conventions from `CLAUDE.md` and `expert-{stack}-develope
 
 Simplify code structure by:
 
-- Preferring **guard clauses** and **early returns** over nested conditionals
-- Reducing unnecessary nesting depth
-- Eliminating redundant code, dead code, and unnecessary abstractions
+- Preferring **guard clauses** and **early returns** over nested conditionals — they reduce nesting depth and make the happy path easier to follow
+- Reducing unnecessary nesting depth — each level of nesting forces readers to mentally track another condition
+- Eliminating redundant code, dead code, and unnecessary abstractions — code that exists but doesn't pull its weight is a maintenance burden
 - Improving readability through clear, descriptive names
-- Using {stack}-idiomatic patterns
+- Using {stack}-idiomatic patterns — idiomatic code is faster for experienced developers to read
 
 ### 4. Maintain Balance
 
 Avoid over-simplification that could:
 
 - Reduce code clarity or maintainability
-- Combine too many concerns into single methods or classes
+- Combine too many concerns into single methods or classes — the goal is clarity, not minimizing line count
 - Prioritize "fewer lines" over readability
 - Make the code harder to debug or extend
 
 ### 5. Focus Scope
 
-Only refine the files passed to you. Do not refactor stable, untouched code.
+Only refine the files passed to you. Do not refactor stable, untouched code — it introduces risk without benefit and makes diffs harder to review.
 
 ## Process
 
@@ -139,7 +139,7 @@ Follow {stack} conventions from `expert-{stack}-developer`:
 
 Simplify code structure by:
 
-- Preferring **guard clauses** and **early returns** over nested conditionals
+- Preferring **guard clauses** and **early returns** over nested conditionals — they reduce nesting and make the happy path obvious
 - Reducing unnecessary nesting depth
 - Eliminating redundant code and unnecessary abstractions
 - Using {stack}-idiomatic patterns
@@ -170,49 +170,49 @@ Only refine the files passed to you. Do not refactor stable, untouched code.
 
 ## Stack-Specific Simplicity Rules
 
+Each rule includes *why* it matters — the reasoning helps the agent make better judgment calls in edge cases.
+
 ### Ruby on Rails
-- **Thin controllers** — controllers should delegate, not contain logic
-- **Fat models, but not too fat** — business logic in models, but extract to services when a model gets complex
-- **No presenter objects** unless you have genuine multi-view rendering needs
-- **Avoid decorators/draper** for simple attribute formatting — just add the method to the model
-- **Use Rails helpers** for view logic before creating custom presenter classes
-- **ActiveRecord callbacks** should be simple — complex callbacks indicate model does too much
+- **Thin controllers** — controllers should delegate to services, not contain logic. Business logic in controllers can't be tested outside a request context and gets duplicated when the same logic is needed from a background job or console.
+- **Fat models, but not too fat** — business logic in models is fine until a model has too many responsibilities. Extract to services when a model exceeds ~200 lines or handles multiple unrelated concerns, because large models become hard to reason about and test.
+- **No presenter objects** unless you have genuine multi-view rendering needs — they add indirection that makes the code harder to trace for a problem they don't actually have.
+- **Avoid decorators/draper** for simple attribute formatting — just add the method to the model. The indirection of a decorator is only worth it when you need to wrap objects dynamically.
+- **Use Rails helpers** for view logic before creating custom presenter classes — helpers are simpler, well-understood, and don't require an extra object in the lookup chain.
+- **ActiveRecord callbacks** should be simple — complex callbacks indicate the model is doing too much, and callbacks make execution order hard to reason about during debugging.
 
 ### TypeScript / Node.js
-- **Avoid wrapper types** — `type UserId = string` is fine; `class UserId { constructor(public value: string) {} }` is over-engineering
-- **Prefer plain objects over classes** for data structures unless you need methods or inheritance
-- **Avoid generic type gymnastics** — if the type is hard to read, it's probably wrong
-- **No service locator pattern** — explicit dependency injection or simple imports
-- **Prefer named exports over barrel files** (index.ts re-exports) for small modules
-- **Async/await everywhere** — avoid .then() chains
+- **Avoid wrapper types** — `type UserId = string` is fine; `class UserId { constructor(public value: string) {} }` adds ceremony without safety. TypeScript's structural typing means the wrapper doesn't actually prevent passing a raw string.
+- **Prefer plain objects over classes** for data structures unless you need methods or inheritance — classes add prototype chain complexity that's rarely needed for data.
+- **Avoid generic type gymnastics** — if a type is hard to read, it's probably wrong. Complex generic types slow down IDE performance and confuse contributors who didn't write them.
+- **No service locator pattern** — explicit dependency injection or simple imports make dependencies visible at the call site, which matters for understanding what a module actually needs.
+- **Prefer named exports over barrel files** (index.ts re-exports) for small modules — barrel files hide where things actually live and slow down tree-shaking.
+- **Async/await everywhere** — avoid .then() chains because async/await reads top-to-bottom like synchronous code, making control flow easier to follow and debug.
 
 ### Python
-- **Dataclasses over custom classes** for structured data
-- **List/dict comprehensions** over map/filter with lambdas (when readable)
-- **Context managers** for resource management, always
-- **Type hints** should add clarity, not be type annotation theater
-- **Functions over classes** for stateless operations
-- **No unnecessary abstraction** — Python is readable by default; respect that
+- **Dataclasses over custom classes** for structured data — they eliminate boilerplate (`__init__`, `__repr__`, `__eq__`) and make the data shape immediately visible.
+- **List/dict comprehensions** over map/filter with lambdas when readable — comprehensions are more Pythonic and often faster, but readability wins when a comprehension would exceed one line.
+- **Context managers** for resource management, always — they guarantee cleanup even when exceptions occur, preventing resource leaks that are hard to debug in production.
+- **Type hints** should add clarity, not be type annotation theater — annotate function signatures and complex data structures, but don't annotate every local variable when the type is obvious from context.
+- **Functions over classes** for stateless operations — a class with only `__init__` and one method is just a function with extra steps.
+- **No unnecessary abstraction** — Python is readable by default; adding layers of indirection for "future flexibility" usually makes code harder to understand without providing real value.
 
 ### Go
-- **Interfaces belong with the consumer**, not the implementer
-- **Errors as values** — wrap with context, return early, don't panic
-- **Small interfaces** — prefer 1-2 method interfaces
-- **Avoid unnecessary structs** for simple data passing
-- **Short variable names** in small scopes are idiomatic, not a smell
-- **No global state** outside of `main()` initialization
+- **Interfaces belong with the consumer**, not the implementer — this follows the dependency inversion principle and keeps packages decoupled. The consumer knows what it needs; the implementer shouldn't have to guess.
+- **Errors as values** — wrap with context using `fmt.Errorf("doing X: %w", err)`, return early, don't panic. Panics cross goroutine boundaries unpredictably and make recovery difficult.
+- **Small interfaces** — prefer 1-2 method interfaces because they're easier to implement, mock, and compose. The larger an interface, the tighter the coupling.
+- **Avoid unnecessary structs** for simple data passing — when a function takes 2-3 related parameters, passing them directly is clearer than creating a struct that's only used once.
+- **Short variable names** in small scopes are idiomatic, not a smell — `r` for a reader in a 5-line function is fine. Long names matter in long scopes.
+- **No global state** outside of `main()` initialization — global state makes testing difficult and creates hidden dependencies between packages.
 
 ### PHP
-- **Use the frameworks query builder/ORM** for database interactions, avoid raw SQL unless necessary
-- **Prefer traits for shared behavior** over deep inheritance hierarchies
-- **Use dependency injection** for services, avoid service locators
-- **Follow PSR standards** for coding style and autoloading
-- **Use type declarations** for function parameters and return types to improve code clarity and reduce bugs
-- **Avoid overusing magic methods** like `__get` and `__set` as they can make code harder to understand and debug
-- **Use namespaces** to organize code and avoid class name collisions, especially in larger projects
-- **Leverage Laravel's features** (if using Laravel) like Eloquent relationships, middleware, and service providers to keep code clean and maintainable
-- **Thin controllers** — controllers should delegate, not contain logic
-- **Fat models, but not too fat** — business logic in models, but extract to services when a model gets complex
+- **Use the framework's query builder/ORM** for database interactions — raw SQL bypasses the framework's query building, escaping, and caching, and it's harder to maintain when schemas change.
+- **Prefer traits for shared behavior** over deep inheritance hierarchies — inheritance creates tight coupling and fragile base class problems; traits compose behavior without hierarchy constraints.
+- **Use dependency injection** for services — service locators hide dependencies, making it unclear what a class actually needs and harder to test in isolation.
+- **Follow PSR standards** for coding style and autoloading — consistent style reduces cognitive load when reading code across the project.
+- **Use type declarations** for function parameters and return types — they catch bugs at call sites rather than deep inside function bodies where the root cause is harder to trace.
+- **Avoid overusing magic methods** like `__get` and `__set` — they make code harder to understand because the behavior isn't visible at the usage site, and IDEs can't provide autocompletion.
+- **Thin controllers** — controllers should delegate to services, not contain logic. Same reasoning as Rails: business logic in controllers can't be reused or tested independently.
+
 ---
 
 ## Template 2: Stack-Specific Review Agent

@@ -6,6 +6,8 @@ Step-by-step process for extracting real patterns from an existing codebase duri
 
 Extract enough real information to write `.claude/` files that reference actual paths, use real conventions, and feel tailored — not generic.
 
+**Critical:** Don't just document *what* the patterns are — capture *why* they exist. Skills that explain reasoning produce better results than skills that list rules. Look for clues in code comments, commit messages, README files, and the structure itself.
+
 ## Step 1: Tech Stack Detection
 
 Run these detection commands and record findings:
@@ -189,3 +191,31 @@ Read the 2-3 representative files selected in Step 3. Look for:
 - Comments only on complex logic → pragmatic
 
 Record these as complexity signals for the `code-simplifier` agent.
+
+## Step 7: Capture the "Why"
+
+After completing the analysis above, make a second pass looking for *reasoning* behind patterns:
+
+```bash
+# Check for architecture decision records
+find . -name "*.md" -path "*/adr/*" -o -name "*.md" -path "*/decisions/*" 2>/dev/null | head -10
+
+# Check README and docs for rationale
+find . -maxdepth 2 -name "README.md" -o -name "ARCHITECTURE.md" -o -name "CONTRIBUTING.md" 2>/dev/null | head -10
+
+# Look for "why" in code comments
+grep -r "# Why\|// Why\|# NOTE:\|// NOTE:" --include="*.rb" --include="*.ts" --include="*.py" --include="*.go" --include="*.php" -l 2>/dev/null | head -10
+
+# Check commit messages for rationale
+git log --oneline --all -50 2>/dev/null | grep -i "because\|reason\|instead of\|rather than"
+```
+
+**What to look for:**
+- Architecture decision records (ADRs) that explain why patterns were chosen
+- README sections explaining project structure
+- Code comments that say "we do X because Y" or "NOTE: this approach was chosen over Z because..."
+- Commit messages that explain trade-offs
+
+**How to use it:** When writing skill rules, include the reasoning. Instead of "Always use service objects", write "Business logic lives in services because controllers can't be tested outside a request context and the same logic is often needed from background jobs."
+
+Skills that explain *why* get followed reliably. Skills that just say *what* get ignored when the model thinks it knows better.
