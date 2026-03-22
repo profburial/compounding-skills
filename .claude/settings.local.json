@@ -7,7 +7,12 @@
       "WebFetch(domain:api.github.com)",
       "WebSearch",
       "Bash(find:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(SKILL_CREATOR=\"/Users/terry/.claude/plugins/cache/claude-plugins-official/skill-creator/61c0597779bd/skills/skill-creator\")",
+      "Bash(DEST=\"/Users/terry/compounding-skills/plugins/compounding-skills/skills/skill-auditor\")",
+      "Bash(mkdir -p \"$DEST/scripts\" \"$DEST/eval-viewer\" \"$DEST/agents\" \"$DEST/references\" \"$DEST/assets\")",
+      "Bash(cp \"$SKILL_CREATOR/scripts/__init__.py\" \"$DEST/scripts/\")",
+      "Bash(cp \"$SKILL_CREATOR/scripts/run_eval.py\" \"$DEST/scripts/\")"
     ]
   }
 }

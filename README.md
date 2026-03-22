@@ -28,7 +28,6 @@ For existing projects, the setup command explores your code to find examples of 
 
 For new projects, the plugin will ask you various questions based on your language/framework of choice to lay a solid foundation to compound on.
 
-
 ## Installation
 
 ```
