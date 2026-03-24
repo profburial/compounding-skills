@@ -687,6 +687,14 @@ Only create a new reference file when:
 
 **Append-only by default.** Never delete, rewrite, or reorganize existing content.
 
+### Validation After Updates
+
+After applying any skill file updates, re-read the modified files and verify:
+- No broken markdown formatting (unclosed code blocks, malformed links)
+- All file path references still point to files that exist
+- No duplicate sections introduced by appending
+- Description still under 1024 characters if it was modified
+
 ## Phase 5: Write Learning Document
 
 **Always write this file**, regardless of whether skill updates were applied.

@@ -2,6 +2,10 @@
 
 Question bank and rationale for interviewing developers about their preferences when starting a new project.
 
+## Fast-Track Mode
+
+When the user selects "Quick setup" or "Just generate defaults" in the Process Flexibility step, use only Q1 (Language & Framework) and infer the rest from the "Greenfield Defaults by Stack" section below. Skip Q2–Q6 entirely. This lets users get a working `.claude/` setup in under a minute, with the understanding that `/{command_prefix}:compound` will personalize it as the codebase grows.
+
 ## Goal
 
 For greenfield projects (little or no existing code), extract enough preference signals to write `.claude/` files that feel personalized rather than generic.

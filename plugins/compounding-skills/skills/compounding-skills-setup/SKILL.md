@@ -14,6 +14,42 @@ disable-model-invocation: true
 
 **Process knowledge:** Load the `skill-garden` skill for generator logic, codebase analysis techniques, and all output templates.
 
+## Communication Style
+
+Pay attention to context cues about the user's technical level. Not every user is a senior developer — some are designers, product managers, or people new to the terminal.
+
+**Signals of technical familiarity:** Uses terms like "ORM", "middleware", "service objects" naturally; references specific tools by name; has opinions about architecture.
+
+**Signals of less familiarity:** Asks what things mean; uses general language ("the database thing"); expresses uncertainty about terminal commands.
+
+**Adapt accordingly:**
+- For technical users: use precise terminology, skip explanations of basic concepts
+- For less technical users: explain jargon when you first use it, use analogies, keep options simple
+- When in doubt, lean toward clarity over brevity — a brief explanation costs less than confusion
+
+## Phase 0 — Context Check
+
+Before starting the wizard, scan the current conversation history for signals that the user has already expressed preferences or described their project. Look for:
+
+- Stack mentions ("I'm building a Rails app", "this is a Next.js project")
+- Workflow preferences ("I use feature branches", "we do TDD")
+- Architectural preferences ("I prefer service objects", "we use domain-driven design")
+- Specific tool mentions ("we use Jest", "Sidekiq for background jobs")
+- Framework details ("we use Pundit for authorization", "Prisma for the ORM")
+
+If the conversation already contains answers to questions from Phases 1–4, pre-fill those answers and skip the corresponding questions. Present a summary of what was inferred:
+
+"I picked up the following from our conversation:
+- Stack: Rails 7.2
+- Git workflow: feature branches + PRs
+- Testing: RSpec, TDD approach
+
+I'll skip those questions and ask about the rest. Sound right?"
+
+Use **AskUserQuestion** with options: "Looks right — continue" / "Let me correct something"
+
+If the conversation has no relevant context, proceed directly to Phase 1.
+
 ## Phase 1 — Detect Project Type
 
 Auto-detect whether this is a brownfield (existing code) or greenfield (new) project:
@@ -50,7 +86,30 @@ options:
 
 If the user selects "Short project alias" or wants a custom name, prompt for the exact string. Record as `{command_prefix}`.
 
-Announce: "Detected [brownfield/greenfield] project. Using `{command_prefix}` as command prefix. [Analyzing codebase / Running preference interview]..."
+Announce: "Detected [brownfield/greenfield] project. Using `{command_prefix}` as command prefix."
+
+## Process Flexibility
+
+After detecting the project type and choosing a prefix, gauge the user's appetite for configuration:
+
+Use **AskUserQuestion**:
+```
+question: "How much do you want to customize?"
+header: "Setup depth"
+options:
+  - label: "Quick setup (recommended for most projects)"
+    description: "I'll analyze your codebase and use smart defaults — takes about 2 minutes"
+  - label: "Detailed setup"
+    description: "Walk me through each configuration choice — takes about 5 minutes"
+  - label: "Just generate defaults"
+    description: "Use sensible defaults for my stack, I'll fine-tune later with compound"
+```
+
+**Quick setup:** Run Phase 2A (brownfield) or Phase 2B with only Q1 (greenfield). Skip Phase 2C — infer framework details from codebase analysis or stack defaults. Use smart defaults for Phases 3–4. Go straight to Phase 5.
+
+**Detailed setup:** Run all phases as documented below.
+
+**Just generate defaults:** Skip Phases 2–4 entirely. Detect stack from project files, use all defaults from `references/greenfield.md` "Greenfield Defaults by Stack" section, and generate with a note that `/{command_prefix}:compound` should be run to personalize.
 
 ## Phase 2A — Brownfield: Codebase Analysis
 
@@ -723,6 +782,23 @@ Create plan and brainstorm directories:
 mkdir -p {plan_dir} docs/brainstorms docs/learnings
 ```
 
+## Phase 5.9 — Validate Generated Output
+
+After generating all files, perform a quick validation pass:
+
+1. **Read back** each generated SKILL.md file and verify:
+   - Frontmatter is valid YAML (name, description, disable-model-invocation all present)
+   - Description is under 1024 characters and includes trigger contexts
+   - Reference links point to files that were actually created
+   - No unsubstituted `{template_variables}` remain
+
+2. **Spot-check** one command file and one skill file:
+   - Read the file back
+   - Verify template variables were substituted correctly
+   - Verify real file paths (brownfield) actually exist in the codebase
+
+3. **Fix** any issues found silently. If a structural issue can't be auto-fixed (missing file, wrong path), report it to the user.
+
 ## Phase 6 — Summary
 
 Display a summary of everything created.
@@ -759,3 +835,16 @@ Start with:
 
 Run /{command_prefix}:compound after each feature to keep skills in sync.
 ```
+
+### Context-Aware Next Steps
+
+After the summary, add guidance tailored to the setup path:
+
+**If quick setup or defaults were used:**
+"These files use smart defaults. After you ship your first feature, run `/{command_prefix}:compound` to personalize them with real examples from your code."
+
+**If brownfield:**
+"Your skills reference real files from your codebase. As conventions evolve, `/{command_prefix}:compound` keeps them in sync."
+
+**If greenfield:**
+"Your skills use {stack} defaults. They'll get much more useful after your first `/{command_prefix}:compound` run — that's when they start learning from your actual code."

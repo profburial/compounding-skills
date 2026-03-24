@@ -245,3 +245,18 @@ When `{command_prefix}:compound` adds an example to an existing skill, use this 
 Insert after the most relevant existing section. Do not append to the end of the file — place examples near related content.
 
 **When to remove:** If a new example makes an existing generic example redundant, replace the generic one. If a section consistently isn't being followed (visible in code review findings), investigate whether the rule is wrong rather than adding more emphasis. Skills that explain *why* get followed; skills that shout ALWAYS get ignored.
+
+---
+
+## Bundling Utility Scripts
+
+When a pattern involves running a script (data migration, API client generation, test data seeding), bundle it in the skill rather than making every work session reinvent it.
+
+**Path:** `.claude/skills/{skill-name}/references/scripts/{script-name}.{ext}`
+
+**Reference from SKILL.md:**
+> "For {task}, use the bundled script at `references/scripts/{script-name}.{ext}` — it handles {what it handles}."
+
+**When to bundle:** Only bundle scripts that are needed in 3+ work sessions. One-off scripts belong in the codebase, not the skill. The signal is clear when multiple independent work sessions all end up writing similar helper scripts — that repeated work should be captured once and reused.
+
+**When NOT to bundle:** Don't bundle application-specific scripts that belong in the project's own `scripts/` or `bin/` directory. Skill scripts should be generic enough to help across many prompts.
