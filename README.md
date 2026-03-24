@@ -41,10 +41,10 @@ Run the setup wizard once:
 
 ```
 /init
-/compounding-skills-setup
+/compounding-skills:setup
 ```
 
-`/init` generates your `CLAUDE.md`. `/compounding-skills-setup` builds your personalized skills library on top of it.
+`/init` generates your `CLAUDE.md`. `/compounding-skills:setup` builds your personalized skills library on top of it.
 
 ## What Setup Produces
 
@@ -77,7 +77,7 @@ Run the setup wizard once:
 After setup, you can audit your generated skills and commands to verify they actually improve Claude's output. The audit command uses the same evaluation playbook as Anthropic's official skill-creator plugin.
 
 ```
-/compounding-skills-audit
+/compounding-skills:audit
 ```
 
 The audit:

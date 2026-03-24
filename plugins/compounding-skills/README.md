@@ -13,7 +13,7 @@ The compound-engineering-plugin provides excellent generic workflow commands and
 Run **once** after installing the plugin. Builds your config library from scratch. Never run again on the same project.
 
 ```
-/compounding-skills-setup
+/compounding-skills:setup
 ```
 
 - **Brownfield projects**: Analyzes real code to extract patterns, conventions, and examples
@@ -33,7 +33,7 @@ After setup, use your generated `{prefix}:compound` command to keep skills in sy
 Run **after** setup to verify your generated skills and commands actually improve Claude's output. Uses the same evaluation playbook as Anthropic's official skill-creator plugin.
 
 ```
-/compounding-skills-audit
+/compounding-skills:audit
 ```
 
 What it does:
@@ -60,10 +60,10 @@ Then run the one-time setup wizard:
 
 ```
 /init
-/compounding-skills-setup
+/compounding-skills:setup
 ```
 
-Run `/init` first to generate your `CLAUDE.md`. Then run `/compounding-skills-setup` to build your personalized `.claude/` library on top of it.
+Run `/init` first to generate your `CLAUDE.md`. Then run `/compounding-skills:setup` to build your personalized `.claude/` library on top of it.
 
 Never run the setup command again on the same project.
 
