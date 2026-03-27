@@ -24,7 +24,7 @@ Load these as needed:
 |------|-------------|
 | `references/brownfield.md` | During `compounding-skills:setup` Phase 2A — step-by-step codebase analysis |
 | `references/greenfield.md` | During `compounding-skills:setup` Phase 2B — preference interview questions and rationale |
-| `references/command-templates.md` | During `compounding-skills:setup` Phase 5.1 — parametrized templates for each workflow command |
+| `references/workflow-templates.md` | During `compounding-skills:setup` Phase 5.1 — parametrized templates for each workflow skill |
 | `references/skill-templates.md` | During `compounding-skills:setup` Phases 5.2–5.3 — skill output templates |
 | `references/agent-templates.md` | During `compounding-skills:setup` Phases 5.5–5.6 — subagent definition templates |
 
@@ -123,16 +123,16 @@ Don't just document *what* the patterns are — understand *why* they exist:
 
 Capture the reasoning when it's apparent from code comments, commit messages, or the structure itself. Skills that explain *why* produce better results than skills that just list *what*.
 
-## How to Write Effective Workflow Commands
+## How to Write Effective Workflow Skills
 
-The best workflow commands:
+The best workflow skills:
 
 1. **Match the user's mental model** — if they think in terms of "tickets" not "plans", use that language
 2. **Embed their tooling** — use their actual test and lint commands, not generic ones
 3. **Reference their file structure** — tell them where to look in their actual project
 4. **Are appropriately detailed** — a solo developer needs different verbosity than a team
 
-See `references/command-templates.md` for parametrized templates.
+See `references/workflow-templates.md` for parametrized templates.
 
 ## How the Code-Simplifier Agent Works
 
@@ -195,7 +195,7 @@ Generated skills should produce behavior that a developer familiar with the stac
 
 ## How to Think About Skill Improvements
 
-When the compound command proposes updates to skills, apply these filters:
+When the compound skill proposes updates to skills, apply these filters:
 
 ### 1. Generalize, Don't Overfit
 

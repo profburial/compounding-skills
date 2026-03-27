@@ -2,11 +2,11 @@
 
 > Skills that compound with your codebase.
 
-The compound-engineering-plugin provides excellent generic workflow commands and a large library of agents. But those skills and agents are authored once and never evolve — they don't know *how you code*.
+The compound-engineering-plugin provides excellent generic workflow skills and a large library of agents. But those skills and agents are authored once and never evolve — they don't know *how you code*.
 
 **compounding-skills** fixes this: it generates a personalized `.claude/` setup tailored to your project's actual patterns, then keeps those skills in sync as your codebase evolves.
 
-## Commands
+## Skills
 
 ### Setup Wizard — One-time Setup
 
@@ -20,17 +20,17 @@ Run **once** after installing the plugin. Builds your config library from scratc
 - **Greenfield projects**: Interviews you about your preferences
 
 Generates:
-- Workflow commands (`brainstorm`, `plan`, `work`, `review`, `compound`) under your chosen prefix
+- Workflow skills (`brainstorm`, `plan`, `work`, `review`, `compound`) under your chosen prefix
 - An `expert-{stack}-developer` skill with per-layer conventions and real code references
 - An `expert-bug-hunter` skill with systematic debugging workflows for your stack
 - A `code-simplifier` agent built from real code examples showing your complexity preferences
 - Stack-specific review agents (Rails, TypeScript, Python, etc.)
 
-After setup, use your generated `{prefix}:compound` command to keep skills in sync as your codebase evolves.
+After setup, use your generated `{prefix}:compound` skill to keep skills in sync as your codebase evolves.
 
-### Skill & Command Audit — Evaluate & Improve
+### Skill Audit — Evaluate & Improve
 
-Run **after** setup to verify your generated skills and commands actually improve Claude's output. Uses the same evaluation playbook as Anthropic's official skill-creator plugin.
+Run **after** setup to verify your generated skills actually improve Claude's output. Uses the same evaluation playbook as Anthropic's official skill-creator plugin.
 
 ```
 /compounding-skills:audit
@@ -38,16 +38,16 @@ Run **after** setup to verify your generated skills and commands actually improv
 
 What it does:
 
-1. **Discovers** your generated skills and commands
-2. **Generates test cases** — realistic prompts that exercise what each skill/command provides
-3. **Runs dual comparisons** — every test runs with the skill/command AND without it (baseline)
+1. **Discovers** your generated skills
+2. **Generates test cases** — realistic prompts that exercise what each skill provides
+3. **Runs dual comparisons** — every test runs with the skill AND without it (baseline)
 4. **Grades outputs** — structured assertions evaluated by a grading agent
 5. **Benchmarks** — aggregates pass rates, timing, and token usage with statistical summaries
 6. **Opens an interactive viewer** — review outputs qualitatively and see quantitative benchmarks side-by-side
 7. **Iterates** — improves based on your feedback, then reruns until you're satisfied
 8. **Optimizes descriptions** (optional) — tunes trigger descriptions for better invocation accuracy
 
-The audit answers a concrete question: *does this skill or command actually make Claude better at coding in your project, or is it just taking up context window space?*
+The audit answers a concrete question: *does this skill actually make Claude better at coding in your project, or is it just taking up context window space?*
 
 ## Installation
 
@@ -65,18 +65,18 @@ Then run the one-time setup wizard:
 
 Run `/init` first to generate your `CLAUDE.md`. Then run `/compounding-skills:setup` to build your personalized `.claude/` library on top of it.
 
-Never run the setup command again on the same project.
+Never run the setup wizard again on the same project.
 
 ## How It Works
 
 ```
-Install → setup command (once, never again)
+Install → setup wizard (once, never again)
              ↓
          Analyze codebase OR interview you
              ↓
-         Write tailored .claude/ config files
+         Write tailored .claude/ skills
              ↓
-         audit command (optional, verify skills work)
+         audit (optional, verify skills work)
              ↓
          Code, ship features
              ↓
@@ -104,14 +104,17 @@ After running the setup wizard, your project will have:
 
 ```
 .claude/
-├── commands/
-│   └── {prefix}/
-│       ├── brainstorm.md
-│       ├── plan.md
-│       ├── work.md
-│       ├── review.md
-│       └── compound.md
 ├── skills/
+│   ├── {prefix}-brainstorm/
+│   │   └── SKILL.md                    ← Explore requirements collaboratively
+│   ├── {prefix}-plan/
+│   │   └── SKILL.md                    ← Structured implementation planning
+│   ├── {prefix}-work/
+│   │   └── SKILL.md                    ← Execute plans with quality checks
+│   ├── {prefix}-review/
+│   │   └── SKILL.md                    ← Exhaustive code review
+│   ├── {prefix}-compound/
+│   │   └── SKILL.md                    ← Extract patterns, update skills
 │   ├── expert-{stack}-developer/
 │   │   ├── SKILL.md                    ← Always-on architecture rules
 │   │   └── references/

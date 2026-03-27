@@ -6,11 +6,11 @@ disable-model-invocation: true
 
 # compounding-skills:setup — Personalized .claude/ Setup Wizard
 
-**Run this once after installing compounding-skills.** It builds a tailored `.claude/` library for your project — workflow commands, project skills, and specialized agents — based on how you actually code.
+**Run this once after installing compounding-skills.** It builds a tailored `.claude/` library for your project — workflow skills, expert skills, and specialized agents — based on how you actually code.
 
-> **One-time command.** After setup completes, use your generated `{command_prefix}:compound` command to keep skills in sync. Never run `/compounding-skills:setup` again on the same project.
+> **One-time skill.** After setup completes, use your generated `{command_prefix}:compound` skill to keep skills in sync. Never run `/compounding-skills:setup` again on the same project.
 >
-> **Prerequisite:** Run `/init` first to generate your `CLAUDE.md` file. This setup wizard focuses on workflow commands and expert skills — project context belongs in `CLAUDE.md`.
+> **Prerequisite:** Run `/init` first to generate your `CLAUDE.md` file. This setup wizard focuses on workflow skills and expert skills — project context belongs in `CLAUDE.md`.
 
 **Process knowledge:** Load the `skill-garden` skill for generator logic, codebase analysis techniques, and all output templates.
 
@@ -70,23 +70,25 @@ Also detect the project name from the current directory:
 basename $(pwd)
 ```
 
-Then ask the user to choose their command prefix — this becomes the namespace for all workflow commands:
+Then ask the user to choose their skill prefix — this becomes the namespace for all workflow skills:
 
 ```
-question: "What would you like to prefix your workflow commands with? This becomes the namespace (e.g., myapp:plan, myapp:work, myapp:brainstorm)."
-header: "Command prefix"
+question: "What would you like to prefix your workflow skills with? This becomes the namespace (e.g., workflow:plan, workflow:work, workflow:brainstorm)."
+header: "Skill prefix"
 options:
-  - label: "{detected directory name} (Recommended)"
+  - label: "workflow (Recommended)"
+    description: "e.g., workflow:plan, workflow:work, workflow:brainstorm"
+  - label: "{detected directory name}"
     description: "e.g., {detected_name}:plan, {detected_name}:work, {detected_name}:brainstorm"
   - label: "Short project alias"
-    description: "Use an abbreviated name (you'll type it for every command)"
+    description: "Use an abbreviated name (you'll type it for every skill)"
   - label: "Generic (no prefix)"
-    description: "Commands named simply plan, work, brainstorm — use if this is your only project"
+    description: "Skills named simply plan, work, brainstorm — use if this is your only project"
 ```
 
 If the user selects "Short project alias" or wants a custom name, prompt for the exact string. Record as `{command_prefix}`.
 
-Announce: "Detected [brownfield/greenfield] project. Using `{command_prefix}` as command prefix."
+Announce: "Detected [brownfield/greenfield] project. Using `{command_prefix}` as skill prefix."
 
 ## Process Flexibility
 
@@ -171,7 +173,7 @@ Linter:       {command}
 Git workflow: {pattern}
 ```
 
-Display this summary to the user and announce: "Found your stack. Now let's configure your workflow commands."
+Display this summary to the user and announce: "Found your stack. Now let's configure your workflow skills."
 
 ## Phase 2B — Greenfield: Preference Interview
 
@@ -530,7 +532,7 @@ Record all answers as `expert_skill_config` for use in Phase 5.2.
 
 ## Phase 3 — Workflow Configuration
 
-All 5 workflow commands (**brainstorm**, **plan**, **work**, **review**, **compound**) are always generated. This phase configures how they behave.
+All 5 workflow skills (**brainstorm**, **plan**, **work**, **review**, **compound**) are always generated. This phase configures how they behave.
 
 **Question 1 — Git workflow:**
 ```
@@ -545,7 +547,7 @@ options:
     description: "Commit when ready, no formal process"
 ```
 
-**Question 2 — Work command behavior:**
+**Question 2 — Work skill behavior:**
 ```
 question: "What should happen when /work finishes a task?"
 header: "Work options"
@@ -624,20 +626,20 @@ If "Add a custom agent": prompt for name, description, and what it should focus 
 
 ## Phase 5 — Generate Files
 
-**Process knowledge:** See `references/command-templates.md`, `references/skill-templates.md`, and `references/agent-templates.md` for all templates.
+**Process knowledge:** See `references/workflow-templates.md`, `references/skill-templates.md`, and `references/agent-templates.md` for all templates.
 
-Announce: "Generating your personalized .claude/ library..."
+Announce: "Generating your personalized .claude/ skills library..."
 
-### 5.1 — Write Workflow Commands
+### 5.1 — Write Workflow Skills
 
-Write all 5 commands to `.claude/commands/{command_prefix}/`:
-- `.claude/commands/{command_prefix}/brainstorm.md`
-- `.claude/commands/{command_prefix}/plan.md`
-- `.claude/commands/{command_prefix}/work.md`
-- `.claude/commands/{command_prefix}/review.md`
-- `.claude/commands/{command_prefix}/compound.md`
+Write all 5 skills, each in its own directory under `.claude/skills/`:
+- `.claude/skills/{command_prefix}-brainstorm/SKILL.md`
+- `.claude/skills/{command_prefix}-plan/SKILL.md`
+- `.claude/skills/{command_prefix}-work/SKILL.md`
+- `.claude/skills/{command_prefix}-review/SKILL.md`
+- `.claude/skills/{command_prefix}-compound/SKILL.md`
 
-Use the full templates from `references/command-templates.md`, substituting:
+Use the full templates from `references/workflow-templates.md`, substituting:
 
 - `{command_prefix}` — the prefix chosen in Phase 1
 - `{project_name}` — detected project name
@@ -648,13 +650,13 @@ Use the full templates from `references/command-templates.md`, substituting:
 - `{branch_style}` — branch naming pattern from Phase 3
 - `{workflow_config}` — options selected in Phase 3
 
-**Critical for the compound command:** In Phase 1.4 ("Read Current Skill Files"), list the actual skill files that will be created in Phases 5.2 and 5.3:
+**Critical for the compound skill:** In Phase 1.4 ("Read Current Skill Files"), list the actual skill files that will be created in Phases 5.2 and 5.3:
 - `.claude/skills/expert-{stack}-developer/SKILL.md`
 - One line per reference file: `.claude/skills/expert-{stack}-developer/references/{layer}.md` (one per layer from `expert_skill_config`)
 - `.claude/skills/expert-bug-hunter/SKILL.md`
 - `.claude/skills/expert-bug-hunter/references/techniques.md`
 
-**Critical for the work command:** References to `expert-{stack}-developer` conventions (not a generic name) and `code-simplifier` agent.
+**Critical for the work skill:** References to `expert-{stack}-developer` conventions (not a generic name) and `code-simplifier` agent.
 
 **Brownfield only:** Include 1-2 real file path examples in plan and work (e.g., `app/services/example.rb:42`).
 
@@ -712,7 +714,7 @@ disable-model-invocation: false
 - What it does (4-step description)
 - Usage examples with realistic invocations for this project's domain
 - Techniques table (technique → when to use)
-- How it integrates with the other `{command_prefix}:` commands
+- How it integrates with the other `{command_prefix}:` workflow skills
 - When to use it (good cases) vs. when to skip it
 
 **`.claude/skills/expert-bug-hunter/references/techniques.md`** — Detailed debugging how-tos, adapted for this project:
@@ -771,7 +773,11 @@ If "Yes": ask for the skill name and description. Generate `.claude/skills/{skil
 Ensure all needed directories exist.
 
 ```bash
-mkdir -p .claude/commands/{command_prefix} \
+mkdir -p .claude/skills/{command_prefix}-brainstorm \
+          .claude/skills/{command_prefix}-plan \
+          .claude/skills/{command_prefix}-work \
+          .claude/skills/{command_prefix}-review \
+          .claude/skills/{command_prefix}-compound \
           .claude/skills/expert-{stack}-developer/references \
           .claude/skills/expert-bug-hunter/references \
           .claude/agents
@@ -792,7 +798,7 @@ After generating all files, perform a quick validation pass:
    - Reference links point to files that were actually created
    - No unsubstituted `{template_variables}` remain
 
-2. **Spot-check** one command file and one skill file:
+2. **Spot-check** one workflow skill file and one expert skill file:
    - Read the file back
    - Verify template variables were substituted correctly
    - Verify real file paths (brownfield) actually exist in the codebase
@@ -806,14 +812,14 @@ Display a summary of everything created.
 ```
 ✓ Setup complete
 
-Commands (.claude/commands/{command_prefix}/):
-  ✓ brainstorm.md   → /{command_prefix}:brainstorm
-  ✓ plan.md         → /{command_prefix}:plan
-  ✓ work.md         → /{command_prefix}:work
-  ✓ review.md       → /{command_prefix}:review
-  ✓ compound.md     → /{command_prefix}:compound
+Workflow skills:
+  ✓ .claude/skills/{command_prefix}-brainstorm/SKILL.md   → /{command_prefix}:brainstorm
+  ✓ .claude/skills/{command_prefix}-plan/SKILL.md         → /{command_prefix}:plan
+  ✓ .claude/skills/{command_prefix}-work/SKILL.md         → /{command_prefix}:work
+  ✓ .claude/skills/{command_prefix}-review/SKILL.md       → /{command_prefix}:review
+  ✓ .claude/skills/{command_prefix}-compound/SKILL.md     → /{command_prefix}:compound
 
-Skills:
+Expert skills:
   ✓ .claude/skills/expert-{stack}-developer/SKILL.md
   ✓ .claude/skills/expert-{stack}-developer/references/{layer-1}.md
   ✓ .claude/skills/expert-{stack}-developer/references/{layer-2}.md

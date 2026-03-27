@@ -71,7 +71,7 @@ options:
 
 ### Q3: Testing Approach
 
-**Why ask:** Informs the /work command's test-before-complete configuration, and shapes patterns skill.
+**Why ask:** Informs the /work skill's test-before-complete configuration, and shapes patterns skill.
 
 ```
 question: "What's your testing approach?"
@@ -95,7 +95,7 @@ options:
 
 ### Q4: Git Workflow
 
-**Why ask:** Informs /plan auto-commit, /work auto-commit, and branch naming in commands.
+**Why ask:** Informs /plan auto-commit, /work auto-commit, and branch naming in skills.
 
 ```
 question: "How do you work with git?"
@@ -153,8 +153,8 @@ After the interview, map answers to template parameters:
 ```
 stack:           {Q1 answer}              → used in all templates
 structure:       {Q2 answer}              → expert skill Architecture Overview
-testing:         {Q3 answer}              → /work command, patterns SKILL.md
-git_workflow:    {Q4 answer}              → /plan, /work commands
+testing:         {Q3 answer}              → /work skill, patterns SKILL.md
+git_workflow:    {Q4 answer}              → /plan, /work skills
 complexity:      {Q5 answer or "pragmatic"} → code-simplifier agent
 conventions:     {Q6 answer or "adapt"}   → patterns SKILL.md
 ```
